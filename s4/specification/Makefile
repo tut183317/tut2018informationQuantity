@@ -1,3 +1,3 @@
 all:
-	javac FrequencerInterface.java
-	javac InformationEstimatorInterface.java
+	javadoc -d html FrequencerInterface.java
+	javadoc -d html InformationEstimatorInterface.java
