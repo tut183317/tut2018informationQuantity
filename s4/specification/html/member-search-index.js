@@ -1,1 +1,0 @@
-memberSearchIndex = [{"l":"estimation()","h":"","u":""},{"l":"setSpace(byte[])","h":"","u":""},{"l":"setTarget(byte[])","h":"","u":""}]
