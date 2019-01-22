@@ -68,11 +68,21 @@ public class Frequencer implements FrequencerInterface{
 	for(int i = 0; i< space.length; i++) {
 	    suffixArray[i] = i;
 	}
-	// Sorting is not implmented yet.
-	//
-	//
-	// ****  Please write code here... ***
-	//
+	// Bubble Sort
+	for(int i = 0; i< space.length-1; i++) {
+	    int a = 0;
+	    int b = 0;
+	    for(int j = i+1; j< space.length; j++) {
+		if(space[i+b] > space[j]) {
+		    suffixArray[j] = i+b;
+		    suffixArray[i+a+b] = j;
+		    a++;
+		}else{
+		    b = j - i;
+		    a = 0;
+		}
+	    }
+	}
     }
 
     private int targetCompare(int i, int j, int end) {
