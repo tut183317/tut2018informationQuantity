@@ -1,4 +1,4 @@
-package s4.B183317; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+package s4.B183317; 
 import java.lang.*;
 import s4.specification.*;
 
@@ -45,7 +45,7 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	int np;
 	np = 1<<(myTarget.length-1);
 	// System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+	double value = Double.MAX_VALUE; // value = minimum of each "value1".
 
 	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
 	    // binary representation of p forms partition.
@@ -61,11 +61,11 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	    // Compute Information Quantity for the partition, in "value1"
 	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
             double value1 = (double) 0.0;
-	    int end = 0;;
+	    int end = 0;
 	    int start = end;
 	    while(start<myTarget.length) {
 		// System.out.write(myTarget[end]);
-		end++;;
+		end++;
 		while(partition[end] == false) { 
 		    // System.out.write(myTarget[end]);
 		    end++;
