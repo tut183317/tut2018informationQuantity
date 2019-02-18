@@ -19,6 +19,8 @@ public class InformationEstimator implements InformationEstimatorInterface{
     // Code to tet, *warning: This code condtains intentional problem*
     byte [] myTarget; // data to compute its information quantity
     byte [] mySpace;  // Sample space to compute the probability
+    boolean targetReady = false;
+    boolean spaceReady = false;
     FrequencerInterface myFrequencer;  // Object for counting frequency
 
     byte [] subBytes(byte [] x, int start, int end) {
@@ -31,56 +33,60 @@ public class InformationEstimator implements InformationEstimatorInterface{
 
     // IQ: information quantity for a count,  -log2(count/sizeof(space))
     double iq(int freq) {
-	return  - Math.log10((double) freq / (double) mySpace.length)/ Math.log10((double) 2.0);
+        if(freq == 0){
+            return Double.MAX_VALUE;
+        }else{
+            return  - Math.log10((double) freq / (double) mySpace.length)/ Math.log10((double) 2.0);
+        }
     }
 
-    public void setTarget(byte [] target) { myTarget = target;}
+    public void setTarget(byte [] target) {
+        myTarget = target;
+        if(myTarget.length>0) targetReady = true;
+    }
     public void setSpace(byte []space) { 
-	myFrequencer = new Frequencer();
-	mySpace = space; myFrequencer.setSpace(space); 
+        myFrequencer = new Frequencer();
+        mySpace = space; myFrequencer.setSpace(space);
+        if(mySpace.length>0) spaceReady = true;
     }
 
     public double estimation(){
-	boolean [] partition = new boolean[myTarget.length+1];
-	int np;
-	np = 1<<(myTarget.length-1);
-	// System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+        //Targetとspaceの異常を検出
+        if(targetReady == false) return 0;
+        if(spaceReady == false) return Double.MAX_VALUE;
+        
+        int i=0;
+        double IQ[] = new double[myTarget.length+1]; //IQ[N]は、先頭からN文字目までの情報量
+        double f[] = new double[myTarget.length-1]; //再帰定義に使うf
+        double min_can[] = new double[myTarget.length-1]; //minの候補
+        double min = Double.MAX_VALUE; //情報量の最小値
+        double origin = -1; //分割しないときの情報量
+        //(IQ[N]=N文字目までの情報量)とするため、IQ[0]は使用しない
+        IQ[0] = -1;
 
-	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
-	    // binary representation of p forms partition.
-	    // for partition {"ab" "cde" "fg"}
-	    // a b c d e f g   : myTarget
-	    // T F T F F T F T : partition:
-	    partition[0] = true; // I know that this is not needed, but..
-	    for(int i=0; i<myTarget.length -1;i++) {
-		partition[i+1] = (0 !=((1<<i) & p));
-	    }
-	    partition[myTarget.length] = true;
-
-	    // Compute Information Quantity for the partition, in "value1"
-	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
-            double value1 = (double) 0.0;
-	    int end = 0;;
-	    int start = end;
-	    while(start<myTarget.length) {
-		// System.out.write(myTarget[end]);
-		end++;;
-		while(partition[end] == false) { 
-		    // System.out.write(myTarget[end]);
-		    end++;
-		}
-		// System.out.print("("+start+","+end+")");
-		myFrequencer.setTarget(subBytes(myTarget, start, end));
-		value1 = value1 + iq(myFrequencer.frequency());
-		start = end;
-	    }
-	    // System.out.println(" "+ value1);
-
-	    // Get the minimal value in "value"
-	    if(value1 < value) value = value1;
-	}
-	return value;
+        //Targetをセット(以降はsubByteFrequencyで部分文字列を探索する)
+        myFrequencer.setTarget(myTarget);
+        //IQ[1]のときは無分割
+        IQ[1] = iq(myFrequencer.subByteFrequency(0,1));
+        
+        //IQ[N+1]を求めるためのループ
+        for(i=2;i<myTarget.length+1;i++){
+            //無分割のときの情報量をとりあえず最小値とする
+            min = iq(myFrequencer.subByteFrequency(0, i));
+            //分割のパターンいろいろ
+            for(int j=0;j<i-1;j++){
+                f[j] = iq(myFrequencer.subByteFrequency(i-j-1, i));
+                min_can[j] = IQ[i-j-1] + f[j];
+                //情報量の最小値を更新
+                if(min > min_can[j]){
+                    min = min_can[j];
+                }
+            }
+            //情報量が最小になるときの分割はIQ[i]
+            IQ[i] = min;
+        }
+        //Targetの情報量を返す
+        return IQ[myTarget.length];
     }
 
     public static void main(String[] args) {

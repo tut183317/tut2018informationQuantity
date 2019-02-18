@@ -25,13 +25,14 @@ public interface InformationEstimatorInterface{
 // The behavior is undefined, if the true value is finete but larger than Double.MAX_VALUE.
 // Note that this happens only when the space is unreasonably large. We will encounter other problem anyway.
 // Otherwise, estimation of information quantity, 
-}                        
+}
 */
 
 
 public class TestCase {
     public static void main(String[] args) {
-	try {
+    //original part
+	/*try { //出現回数が正しいかテスト
 	    FrequencerInterface  myObject;
 	    int freq;
 	    System.out.println("checking s4.B183312.Frequencer");
@@ -44,12 +45,154 @@ public class TestCase {
 	}
 	catch(Exception e) {
 	    System.out.println("Exception occurred: STOP");
-	}
-
-	try {
+	}*//*
+    try { //出現回数が正しいかテスト0(W)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE0 : checking Frequencer(出現回数カウント)");
+        myObject = new s4.B183312.Frequencer();
+        myObject.setSpace("hoge".getBytes());
+        myObject.setTarget("hogefuga".getBytes());
+        freq = myObject.frequency();
+        System.out.println("\"hogefuga\" in \"hoge\" appears "+freq+" times.");
+        if(0 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //出現回数が正しいかテスト1(W)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE1 : checking Frequencer(出現回数カウント)");
+        myObject = new s4.B183312.Frequencer();
+        myObject.setSpace("AAAA".getBytes());
+        myObject.setTarget("AA".getBytes());
+        freq = myObject.frequency();
+        System.out.println("\"AA\" in \"AAAA\" appears "+freq+" times.");
+        if(3 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //出現回数が正しいかテスト2(W)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE2 : checking Frequencer(出現回数カウント)");
+        myObject = new s4.B183312.Frequencer();
+        myObject.setSpace("Hoge Hoge Fuga".getBytes());
+        myObject.setTarget("o".getBytes());
+        freq = myObject.frequency();
+        System.out.println("\"o\" in \"Hoge Hoge Fuga\" appears "+freq+" times.");
+        if(2 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Spaceのlengthが0のときの挙動(B)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE3 : checking Frequencer(Spaceのlengthが0)");
+        myObject = new s4.B183312.Frequencer();
+        myObject.setSpace("".getBytes());
+        myObject.setTarget("AA".getBytes());
+        freq = myObject.frequency();
+        if(0 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Targetのlengthが0のときの挙動(B)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE4 : checking Frequencer(Targetのlengthが0)");
+        myObject = new s4.B183312.Frequencer();
+        myObject.setSpace("AAAA".getBytes());
+        myObject.setTarget("".getBytes());
+        freq = myObject.frequency();
+        if(-1 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Spaceをセットしないときの挙動(B)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE5 : checking Frequencer(Spaceをセットしない時)");
+        myObject = new s4.B183312.Frequencer();
+        //myObject.setSpace("".getBytes());
+        myObject.setTarget("AA".getBytes());
+        freq = myObject.frequency();
+        if(0 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Targetをセットしないときの挙動(B)
+        FrequencerInterface  myObject;
+        int freq;
+        System.out.println("CASE6 : checking Frequencer(Targetをセットしない時)");
+        myObject = new s4.B183312.Frequencer();
+        myObject.setSpace("AAAA".getBytes());
+        //myObject.setTarget("".getBytes());
+        freq = myObject.frequency();
+        if(-1 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Targetのlengthが0のときの挙動(B)
+        InformationEstimatorInterface myObject;
+        double value;
+        System.out.println("CASE7 : checking InformationEstimator(Targetのlengthが0)");
+        myObject = new s4.B183312.InformationEstimator();
+        myObject.setSpace("3210321001230123".getBytes());
+        myObject.setTarget("".getBytes());
+        value = myObject.estimation();
+        if(0.0 == value) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Targetがセットされていない時の挙動(B)
+        InformationEstimatorInterface myObject;
+        double value;
+        System.out.println("CASE8 : checking InformationEstimator(Targetがセットされていない時)");
+        myObject = new s4.B183312.InformationEstimator();
+        myObject.setSpace("3210321001230123".getBytes());
+        //myObject.setTarget("".getBytes());
+        value = myObject.estimation();
+        if(0.0 == value) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try { //Spaceがセットされていない時の挙動(B)
+        InformationEstimatorInterface myObject;
+        double value;
+        System.out.println("CASE9 : checking InformationEstimator(Spaceがセットされていない時)");
+        myObject = new s4.B183312.InformationEstimator();
+        //myObject.setSpace("".getBytes());
+        myObject.setTarget("0".getBytes());
+        value = myObject.estimation();
+        if(Double.MAX_VALUE == value) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+    }
+    catch(Exception e) {
+        e.printStackTrace();
+        System.out.println("Exception occurred: STOP");
+    }
+    try {
 	    InformationEstimatorInterface myObject;
 	    double value;
-	    System.out.println("checking s4.B183312.InformationEstimator");
+	    System.out.println("CASE10 : checking InformationEstimator");
 	    myObject = new s4.B183312.InformationEstimator();
 	    myObject.setSpace("3210321001230123".getBytes());
 	    myObject.setTarget("0".getBytes());
@@ -66,9 +209,121 @@ public class TestCase {
 	    System.out.println(">00 "+value);
 	}
 	catch(Exception e) {
+        e.printStackTrace();
 	    System.out.println("Exception occurred: STOP");
-	}
-
+	}*/
+    int c;
+    c = 0;
+    try {
+        FrequencerInterface  myObject;
+        int freq;
+            c = 0;
+        System.out.println("checking Frequencer");
+        myObject = new Frequencer();
+        freq = myObject.frequency();
+        if(-1 != freq) { System.out.println("frequency() should return -1, when target is not set, but returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setTarget("".getBytes());
+        freq = myObject.frequency();
+        if(-1 != freq) { System.out.println("frequency() should return -1, when target is empty, but return "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAA".getBytes());
+        if(-1 != freq) { System.out.println("frequency() for AAA should return -1, when target is  not set. But it returns  "+freq); c++; } 
+        myObject = new Frequencer();
+        myObject.setSpace("AAA".getBytes());
+        myObject.setTarget("".getBytes());
+        freq = myObject.frequency();
+        if(-1 != freq) { System.out.println("frequency() for AAA should return -1, when taget empty string. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setTarget("A".getBytes());
+        freq = myObject.frequency();       
+        if(0 != freq) { System.out.println("frequency() for not set, should return 0, when taget is not empty. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("".getBytes());
+        myObject.setTarget("A".getBytes());
+        freq = myObject.frequency();       
+        if(0 != freq) { System.out.println("frequency() for empty space, should return 0, when taget is not empty. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAA".getBytes());
+        myObject.setTarget("A".getBytes());
+        freq = myObject.frequency();
+        if(3 != freq) { System.out.println("frequency() for AAA, should return 3, when taget is A. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAA".getBytes());
+        myObject.setTarget("AA".getBytes());
+        freq = myObject.frequency();
+        if(2 != freq) { System.out.println("frequency() for AAA, should return 2, when taget is AA. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAA".getBytes());
+        myObject.setTarget("AAA".getBytes());
+        freq = myObject.frequency();
+        if(1 != freq) { System.out.println("frequency() for AAA, should return 1, when taget is AAA. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAA".getBytes());
+        myObject.setTarget("AAAA".getBytes());
+        freq = myObject.frequency();
+        if(0 != freq) { System.out.println("frequency() for AAA, should return 0, when taget is AAAA. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("Hi Ho Hi Ho".getBytes());
+        myObject.setTarget("H".getBytes());
+        freq = myObject.frequency();
+        if(4 != freq) {System.out.println("frequency() for Hi_Ho_Hi_Ho, should return 4, when taget is H. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("Hi Ho Hi Ho".getBytes());
+        myObject.setTarget("Ho".getBytes());
+        freq = myObject.frequency();
+        if(2 != freq) {System.out.println("frequency() for Hi_Ho_Hi_Ho, should return 2, when taget is Ho. But it returns "+freq); c++; }
+        /* please note subByteFreqency(0,0) is considered illeagal specification, and you should not include this case */
+        myObject = new Frequencer();
+        myObject.setSpace("AAAB".getBytes());
+        myObject.setTarget("AAAAB".getBytes());
+        freq = myObject.subByteFrequency(0,1);
+        if(3 != freq) { System.out.println("SubBytefrequency() for AAAB, should return 3, when taget is AAAAB[0:1]. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAAB".getBytes());
+        myObject.setTarget("AAAAB".getBytes());
+        freq = myObject.subByteFrequency(1,2);
+        if(3 != freq) { System.out.println("SubBytefrequency() for AAAB, should return 3, when taget is AAAAB[1:2]. But it returns "+freq); c++; }
+        if(2 == freq) { System.out.println("You might be confused by the intentional error in sample code.");   }
+        myObject = new Frequencer();
+        myObject.setSpace("AAAB".getBytes());
+        myObject.setTarget("AAAAB".getBytes());
+        freq = myObject.subByteFrequency(1,3);
+        if(2 != freq) { System.out.println("SubBytefrequency() for AAAB, should return 2, when taget is AAAAB[1:3]. But it returns "+freq); c++; }
+        myObject = new Frequencer();
+        myObject.setSpace("AAAB".getBytes());
+        myObject.setTarget("AAAAB".getBytes());
+        freq = myObject.subByteFrequency(4,5);
+        if(1 != freq) { 
+        System.out.println("SubBytefrequency() for AAAB, should return 1, when taget is AAAAB[4:5]. But it returns "+freq); c++;  
+        }
     }
-}	    
-	    
+    catch(Exception e) {
+        System.out.println("Exception occurred in Frequencer Object: STOP");
+    }
+
+    try {
+        InformationEstimatorInterface myObject;
+        double value;
+        System.out.println("checking s4.slow.InformationEstimator");
+        myObject = new InformationEstimator();
+        myObject.setSpace("3210321001230123".getBytes());
+        myObject.setTarget("0".getBytes());
+        value = myObject.estimation();
+        if((value < 1.9999) || (2.0001 <value)) { System.out.println("IQ for 0 in 3210321001230123 should be 2.0. But it returns "+value); c++; }
+        myObject.setTarget("01".getBytes());
+        value = myObject.estimation();
+        if((value < 2.9999) || (3.0001 <value)) { System.out.println("IQ for 01 in 3210321001230123 should be 3.0. But it returns "+value); c++; }
+        myObject.setTarget("0123".getBytes());
+        value = myObject.estimation();
+        if((value < 2.9999) || (3.0001 <value)) { System.out.println("IQ for 0123 in 3210321001230123 should be 3.0. But it returns "+value); c++; }
+        myObject.setTarget("00".getBytes());
+        value = myObject.estimation();
+        if((value < 3.9999) || (4.0001 <value)) { System.out.println("IQ for 00 in 3210321001230123 should be 4.0. But it returns "+value); c++; }
+    }
+    catch(Exception e) {
+        System.out.println("Exception occurred: STOP");
+    }
+    if(c == 0) { System.out.println("TestCase OK"); }
+    }
+}

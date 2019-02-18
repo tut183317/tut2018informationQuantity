@@ -15,6 +15,7 @@ public interface InformationEstimatorInterface{
 }                        
 */
 
+
 public class InformationEstimator implements InformationEstimatorInterface{
     // Code to tet, *warning: This code condtains intentional problem*
     byte [] myTarget; // data to compute its information quantity
@@ -40,13 +41,43 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	mySpace = space; myFrequencer.setSpace(space); 
     }
 
+    public double estimation()
+    {
+	double[] iqsave = new double[myTarget.length];
+	double value;
+	double tmp;
+
+	if(myTarget == null){
+		return 0.0;
+	}
+	if(mySpace == null){
+		return Double.MAX_VALUE;
+	}
+	for(int i = 0; i < myTarget.length; i++){
+		value = 0.0;
+		for(int j = 0; j <= i; j++){
+			myFrequencer.setTarget(subBytes(myTarget, j, i+1));
+			if(j == 0){
+				value = iq(myFrequencer.frequency());
+			    }else{
+				tmp = iqsave[j-1] + iq(myFrequencer.frequency());
+				if(value > tmp){
+					value = tmp;
+				    }
+			    }
+		    }
+		iqsave[i] = value;
+	    }
+	return iqsave[myTarget.length-1];
+    }
+
+    /*
     public double estimation(){
 	boolean [] partition = new boolean[myTarget.length+1];
 	int np;
 	np = 1<<(myTarget.length-1);
 	// System.out.println("np="+np+" length="+myTarget.length);
 	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
-
 	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
 	    // binary representation of p forms partition.
 	    // for partition {"ab" "cde" "fg"}
@@ -57,7 +88,6 @@ public class InformationEstimator implements InformationEstimatorInterface{
 		partition[i+1] = (0 !=((1<<i) & p));
 	    }
 	    partition[myTarget.length] = true;
-
 	    // Compute Information Quantity for the partition, in "value1"
 	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
             double value1 = (double) 0.0;
@@ -73,16 +103,16 @@ public class InformationEstimator implements InformationEstimatorInterface{
 		// System.out.print("("+start+","+end+")");
 		myFrequencer.setTarget(subBytes(myTarget, start, end));
 		value1 = value1 + iq(myFrequencer.frequency());
+		//System.out.println(myFrequencer.frequency());
 		start = end;
 	    }
 	    // System.out.println(" "+ value1);
-
 	    // Get the minimal value in "value"
 	    if(value1 < value) value = value1;
-	}
+	    }
 	return value;
     }
-
+*/
     public static void main(String[] args) {
 	InformationEstimator myObject;
 	double value;
@@ -102,8 +132,3 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	System.out.println(">00 "+value);
     }
 }
-				  
-			       
-
-	
-    

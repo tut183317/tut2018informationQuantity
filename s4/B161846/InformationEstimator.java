@@ -1,5 +1,6 @@
-package s4.B161846; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+package s4.B161846; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID.
 import java.lang.*;
+import java.util.*;
 import s4.specification.*;
 
 /* What is imported from s4.specification
@@ -11,8 +12,8 @@ public interface InformationEstimatorInterface{
 // It returns Double.MAX_VALUE, when the true value is infinite, or space is not set.
 // The behavior is undefined, if the true value is finete but larger than Double.MAX_VALUE.
 // Note that this happens only when the space is unreasonably large. We will encounter other problem anyway.
-// Otherwise, estimation of information quantity, 
-}                        
+// Otherwise, estimation of information quantity,
+}
 */
 
 public class InformationEstimator implements InformationEstimatorInterface{
@@ -20,6 +21,8 @@ public class InformationEstimator implements InformationEstimatorInterface{
     byte [] myTarget; // data to compute its information quantity
     byte [] mySpace;  // Sample space to compute the probability
     FrequencerInterface myFrequencer;  // Object for counting frequency
+    int x = 0;
+
 
     byte [] subBytes(byte [] x, int start, int end) {
 	// corresponding to substring of String for  byte[] ,
@@ -35,14 +38,15 @@ public class InformationEstimator implements InformationEstimatorInterface{
     }
 
     public void setTarget(byte [] target) { myTarget = target;}
-    public void setSpace(byte []space) { 
+    public void setSpace(byte []space) {
 	myFrequencer = new Frequencer();
-	mySpace = space; myFrequencer.setSpace(space); 
+	mySpace = space; myFrequencer.setSpace(space);
     }
 
     public double estimation(){
 	boolean [] partition = new boolean[myTarget.length+1];
 	int np;
+  TargetIq[] targetIq = new TargetIq[mySpace.length];
 	np = 1<<(myTarget.length-1);
 	// System.out.println("np="+np+" length="+myTarget.length);
 	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
@@ -66,13 +70,39 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	    while(start<myTarget.length) {
 		// System.out.write(myTarget[end]);
 		end++;;
-		while(partition[end] == false) { 
+		while(partition[end] == false) {
 		    // System.out.write(myTarget[end]);
 		    end++;
 		}
 		// System.out.print("("+start+","+end+")");
 		myFrequencer.setTarget(subBytes(myTarget, start, end));
-		value1 = value1 + iq(myFrequencer.frequency());
+		/*targetIq[x] = new TargetIq();
+    boolean existIq = false;
+    int k = 0;
+    for(k = 0;k < x;k++) {
+      if(Arrays.equals(targetIq[k].target, subBytes(myTarget, start, end)) == true) {
+        existIq = true;
+        break;
+      }
+    }
+    if(existIq == false) {
+		targetIq[x].target = subBytes(myTarget, start, end);
+		targetIq[x].iq = iq(myFrequencer.frequency());
+    value1 =  value1 + targetIq[x].iq;
+    x++;
+    }
+    else {
+      value1 =  value1 + targetIq[k].iq;
+    }
+
+    */
+
+    int freq = myFrequencer.frequency();
+    if(targetIq[freq] == null)
+      targetIq[freq] = new TargetIq();
+    if(targetIq[freq].iq == 0.0)
+      targetIq[freq].iq = iq(freq);
+    value1 = value1 + targetIq[freq].iq;
 		start = end;
 	    }
 	    // System.out.println(" "+ value1);
@@ -100,10 +130,12 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	myObject.setTarget("00".getBytes());
 	value = myObject.estimation();
 	System.out.println(">00 "+value);
+
+
     }
 }
-				  
-			       
 
-	
-    
+class TargetIq{
+	double iq = 0.0;
+
+}

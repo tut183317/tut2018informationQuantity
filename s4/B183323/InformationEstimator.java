@@ -1,25 +1,16 @@
-package s4.B183323; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+package s4.B183323; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID.
 import java.lang.*;
+import java.util.Arrays;
 import s4.specification.*;
-
-/* What is imported from s4.specification
-package s4.specification;
-public interface InformationEstimatorInterface{
-    void setTarget(byte target[]); // set the data for computing the information quantities
-    void setSpace(byte space[]); // set data for sample space to computer probability
-    double estimation(); // It returns 0.0 when the target is not set or Target's length is zero;
-// It returns Double.MAX_VALUE, when the true value is infinite, or space is not set.
-// The behavior is undefined, if the true value is finete but larger than Double.MAX_VALUE.
-// Note that this happens only when the space is unreasonably large. We will encounter other problem anyway.
-// Otherwise, estimation of information quantity, 
-}                        
-*/
 
 public class InformationEstimator implements InformationEstimatorInterface{
     // Code to tet, *warning: This code condtains intentional problem*
     byte [] myTarget; // data to compute its information quantity
     byte [] mySpace;  // Sample space to compute the probability
     FrequencerInterface myFrequencer;  // Object for counting frequency
+
+    boolean spaceready = false;
+    boolean targetready = false;
 
     byte [] subBytes(byte [] x, int start, int end) {
 	// corresponding to substring of String for  byte[] ,
@@ -34,53 +25,59 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	return  - Math.log10((double) freq / (double) mySpace.length)/ Math.log10((double) 2.0);
     }
 
-    public void setTarget(byte [] target) { myTarget = target;}
-    public void setSpace(byte []space) { 
-	myFrequencer = new Frequencer();
-	mySpace = space; myFrequencer.setSpace(space); 
+    public void setTarget(byte [] target) {
+    	myTarget = target;
+    	if(myTarget.length > 0)
+    		targetready = true;
+    }
+
+    public void setSpace(byte []space) {
+		myFrequencer = new Frequencer();
+		mySpace = space; myFrequencer.setSpace(space);
+		if(mySpace.length > 0)
+	    	spaceready = true;
     }
 
     public double estimation(){
-	boolean [] partition = new boolean[myTarget.length+1];
-	int np;
-	np = 1<<(myTarget.length-1);
-	// System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+    	double[] nparray = new double[myTarget.length+1];
+    	double value = Double.MAX_VALUE; // value = mininimum of each "value1".
+    	double ret = 0.0;
+    	int start=0, end=0;
 
-	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
-	    // binary representation of p forms partition.
-	    // for partition {"ab" "cde" "fg"}
-	    // a b c d e f g   : myTarget
-	    // T F T F F T F T : partition:
-	    partition[0] = true; // I know that this is not needed, but..
-	    for(int i=0; i<myTarget.length -1;i++) {
-		partition[i+1] = (0 !=((1<<i) & p));
-	    }
-	    partition[myTarget.length] = true;
+    	if(targetready == false){
+    		return 0.0;
+    	}
+    	if(spaceready == false){
+    		return Double.MAX_VALUE;
+    	}
 
-	    // Compute Information Quantity for the partition, in "value1"
-	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
-            double value1 = (double) 0.0;
-	    int end = 0;;
-	    int start = end;
-	    while(start<myTarget.length) {
-		// System.out.write(myTarget[end]);
-		end++;;
-		while(partition[end] == false) { 
-		    // System.out.write(myTarget[end]);
-		    end++;
-		}
-		// System.out.print("("+start+","+end+")");
-		myFrequencer.setTarget(subBytes(myTarget, start, end));
-		value1 = value1 + iq(myFrequencer.frequency());
-		start = end;
-	    }
-	    // System.out.println(" "+ value1);
+    	for(int i=0; i<myTarget.length; i++){
+    		end = i+1;
+    		if(i == 0){
+    			myFrequencer.setTarget(subBytes(myTarget, start, end));
+    			nparray[i] = iq(myFrequencer.frequency());
+    		}
+    		else{
+    			for(int j=0; j<end; j++){
+    				start = j;
+    				myFrequencer.setTarget(subBytes(myTarget, start, end));
+    				ret = iq(myFrequencer.frequency());
+    				if(start != 0){
+    					ret = nparray[j-1] + ret;
+    				}
+    				if(ret < value){
+    					value = ret;
+    				}
+    			}
+    			nparray[i] = value;
+    		}
+    	}
 
-	    // Get the minimal value in "value"
-	    if(value1 < value) value = value1;
-	}
-	return value;
+    	if(Double.isInfinite(nparray[myTarget.length-1])) {
+    		return Double.MAX_VALUE;
+    	}
+
+		return nparray[myTarget.length-1];
     }
 
     public static void main(String[] args) {
@@ -88,22 +85,34 @@ public class InformationEstimator implements InformationEstimatorInterface{
 	double value;
 	myObject = new InformationEstimator();
 	myObject.setSpace("3210321001230123".getBytes());
+
 	myObject.setTarget("0".getBytes());
 	value = myObject.estimation();
 	System.out.println(">0 "+value);
-	myObject.setTarget("01".getBytes());
+
+ 	myObject.setTarget("01".getBytes());
 	value = myObject.estimation();
 	System.out.println(">01 "+value);
-	myObject.setTarget("0123".getBytes());
+
+  	myObject.setTarget("0123".getBytes());
 	value = myObject.estimation();
 	System.out.println(">0123 "+value);
+
+	myObject.setTarget("230".getBytes());
+	value = myObject.estimation();
+	System.out.println(">230 "+value);
+
+  	myObject.setTarget("321".getBytes());
+	value = myObject.estimation();
+	System.out.println(">321 "+value);
+
+  	myObject.setTarget("01230".getBytes());
+	value = myObject.estimation();
+	System.out.println(">01230 "+value);
+
 	myObject.setTarget("00".getBytes());
 	value = myObject.estimation();
 	System.out.println(">00 "+value);
+
     }
 }
-				  
-			       
-
-	
-    

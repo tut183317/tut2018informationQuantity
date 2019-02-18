@@ -1,5 +1,5 @@
 all:
-	javac Hello.java -classpath "../.."
+#	javac Hello.java -classpath "../.."
 	javac Frequencer.java -classpath "../.."
 	javac InformationEstimator.java -classpath "../.."
 	javac TestCase.java -classpath "../.."

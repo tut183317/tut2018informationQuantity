@@ -1,4 +1,4 @@
-package s4.B141837; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID. 
+package s4.B183343; // Please modify to s4.Bnnnnnn, where nnnnnn is your student ID.
 import java.lang.*;
 import s4.specification.*;
 
@@ -24,52 +24,66 @@ public interface InformationEstimatorInterface{
 // It returns Double.MAX_VALUE, when the true value is infinite, or space is not set.
 // The behavior is undefined, if the true value is finete but larger than Double.MAX_VALUE.
 // Note that this happens only when the space is unreasonably large. We will encounter other problem anyway.
-// Otherwise, estimation of information quantity, 
-}                        
+// Otherwise, estimation of information quantity,
+}
 */
 
-//Frequencerのテストコードについて、specificationの記述ごとに対応するテストケースを1つ以上作り、TestCase.javaに記述を追加せよ
 
-public class TestCase {
+public class TestCase1 {
     public static void main(String[] args) {
 	try {
 	    FrequencerInterface  myObject;
 	    int freq;
-	    System.out.println("checking s4.B141837.Frequencer");
-	    myObject = new s4.B141837.Frequencer();
+	    System.out.println("checking s4.B183343.Frequencer");
+	    myObject = new s4.B183343.Frequencer();
 	    myObject.setSpace("Hi Ho Hi Ho".getBytes());
 	    myObject.setTarget("H".getBytes());
 	    freq = myObject.frequency();
 	    System.out.print("\"H\" in \"Hi Ho Hi Ho\" appears "+freq+" times. ");
-	    if(4 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+
+      if(4 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+
+      myObject.setSpace("AAA".getBytes());
+      myObject.setTarget("AA".getBytes());
+      freq = myObject.frequency();
+      System.out.print("\"AA\" in \"AAA\" appears "+freq+" times. ");
+
+      if(2 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+
+      myObject.setSpace("AA".getBytes());
+      myObject.setTarget("AAA".getBytes());
+      freq = myObject.frequency();
+      System.out.print("\"AAA\" in \"AA\" appears "+freq+" times. ");
+
+      if(0 == freq) { System.out.println("OK"); } else {System.out.println("WRONG"); }
+
 	}
 	catch(Exception e) {
 	    System.out.println("Exception occurred: STOP");
 	}
 
-	try {
-	    InformationEstimatorInterface myObject;
-	    double value;
-	    System.out.println("checking s4.B141837.InformationEstimator");
-	    myObject = new s4.B141837.InformationEstimator();
-	    myObject.setSpace("3210321001230123".getBytes());
-	    myObject.setTarget("0".getBytes());
-	    value = myObject.estimation();
-	    System.out.println(">0 "+value);
-	    myObject.setTarget("01".getBytes());
-	    value = myObject.estimation();
-	    System.out.println(">01 "+value);
-	    myObject.setTarget("0123".getBytes());
-	    value = myObject.estimation();
-	    System.out.println(">0123 "+value);
-	    myObject.setTarget("00".getBytes());
-	    value = myObject.estimation();
-	    System.out.println(">00 "+value);
-	}
-	catch(Exception e) {
-	    System.out.println("Exception occurred: STOP");
-	}
+	// try {
+	//     InformationEstimatorInterface myObject;
+	//     double value;
+	//     System.out.println("checking s4.B183343.InformationEstimator");
+	//     myObject = new s4.B183343.InformationEstimator();
+	//     myObject.setSpace("3210321001230123".getBytes());
+	//     myObject.setTarget("0".getBytes());
+	//     value = myObject.estimation();
+	//     System.out.println(">0 "+value);
+	//     myObject.setTarget("01".getBytes());
+	//     value = myObject.estimation();
+	//     System.out.println(">01 "+value);
+	//     myObject.setTarget("0123".getBytes());
+	//     value = myObject.estimation();
+	//     System.out.println(">0123 "+value);
+	//     myObject.setTarget("00".getBytes());
+	//     value = myObject.estimation();
+	//     System.out.println(">00 "+value);
+	// }
+	// catch(Exception e) {
+	//     System.out.println("Exception occurred: STOP");
+	// }
 
     }
-}	    
-	    
+}
