@@ -132,7 +132,7 @@ public class Frequencer implements FrequencerInterface {
 	// "Ho" = "Ho"
 	// "Ho" < "Ho " : "Ho " is not in the head of suffix "Ho"
 	// "Ho" = "H" : "H" is in the head of suffix "Ho"
-	for (int k = j; k < end; k++) {
+	/*for (int k = j; k < end; k++) {
 	    if (myTarget[k] != mySpace[suffixArray[i] + k - j]) {
 		if (myTarget[k] < mySpace[suffixArray[i] + k - j]) {
 		    return 1;
@@ -140,7 +140,31 @@ public class Frequencer implements FrequencerInterface {
 		return -1;
 	    }
 	}
-	return 0; // This line should be modified.
+	return 0; // This line should be modified.*/
+	
+	int i_length = mySpace.length - suffixArray[i];
+	//System.out.println("i_length  ="+i_length+"");
+	int j_length = end - j;
+	int tmp = end-j;
+	int k;
+	if(i_length < j_length){
+	    tmp = i_length;
+	}
+	
+	for(k=0; k<tmp; k++){
+	    if(mySpace[suffixArray[i] + k] > myTarget[j + k]){
+		return 1;
+	    }
+	    if(mySpace[suffixArray[i] + k] < myTarget[j + k]){
+		return -1;
+	    }
+	}
+	
+	if( i_length == j_length || i_length > j_length){
+	    return 0;
+	}else{
+	    return -1;
+	}
     }
     
     private int subByteStartIndex(int start, int end) {
@@ -205,7 +229,8 @@ public class Frequencer implements FrequencerInterface {
 	Frequencer frequencerObject;
 	try {
 	    frequencerObject = new Frequencer();
-	    frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
+	    //frequencerObject.setSpace("Hi Ho Hi Ho".getBytes());
+	    frequencerObject.setSpace("AAA".getBytes());
 	    frequencerObject.printSuffixArray(); // you may use this line for DEBUG
 	    /*
 	     * Example from "Hi Ho Hi Ho" 
@@ -222,19 +247,20 @@ public class Frequencer implements FrequencerInterface {
 	     * A:o Hi Ho
 	     */
 	    
-	    frequencerObject.setTarget("H".getBytes());
-	    if (frequencerObject.subByteStartIndex(0, 1)==3) {
+	    //frequencerObject.setTarget("H".getBytes());
+	    frequencerObject.setTarget("AA".getBytes());
+	    if (frequencerObject.subByteStartIndex(0, 1)==1) {
 		System.out.println("OK");
 	    }else {
 		System.out.println("WRONG");
 	    }
 	    
-	    if (frequencerObject.subByteEndIndex(0, 1)==7) {
+	    if (frequencerObject.subByteEndIndex(0, 1)==3) {
 		System.out.println("OK");
 	    }else {
 		System.out.println("WRONG");
 	    }
-	    
+	    System.out.println(frequencerObject.subByteStartIndex(0, 1) + " " + frequencerObject.subByteEndIndex(0, 1));
 	    int result = frequencerObject.frequency();
 	    System.out.print("Freq = " + result + " ");
 	    if (4 == result) {

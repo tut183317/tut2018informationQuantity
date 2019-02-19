@@ -41,46 +41,31 @@ public class InformationEstimator implements InformationEstimatorInterface{
     }
 
     public double estimation(){
-	boolean [] partition = new boolean[myTarget.length+1];
-	int np;
-	np = 1<<(myTarget.length-1);
-	// System.out.println("np="+np+" length="+myTarget.length);
-	double value = Double.MAX_VALUE; // value = minimum of each "value1".
+        if (myTarget == null || myTarget.length == 0)
+            return 0.0;
+        if (mySpace == null || mySpace.length == 0)
+            return Double.MAX_VALUE;
+        var cash = new double[myTarget.length];
+        myFrequencer.setTarget(myTarget);
+        for (int i = 0; i < myTarget.length; i++){
+            var min = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < i; j++) {
+                int freq = myFrequencer.subByteFrequency(j + 1, i + 1);
+                var sb = iq (freq) + cash[j];
+                min = Math.min(min,sb);
+            }
+            int freq = myFrequencer.subByteFrequency(0, i + 1);
+            var iqn = iq(freq);
+            cash[i] = Math.min(min, iqn);
 
-	for(int p=0; p<np; p++) { // There are 2^(n-1) kinds of partitions.
-	    // binary representation of p forms partition.
-	    // for partition {"ab" "cde" "fg"}
-	    // a b c d e f g   : myTarget
-	    // T F T F F T F T : partition:
-	    partition[0] = true; // I know that this is not needed, but..
-	    for(int i=0; i<myTarget.length -1;i++) {
-		partition[i+1] = (0 !=((1<<i) & p));
-	    }
-	    partition[myTarget.length] = true;
 
-	    // Compute Information Quantity for the partition, in "value1"
-	    // value1 = IQ(#"ab")+IQ(#"cde")+IQ(#"fg") for the above example
-            double value1 = (double) 0.0;
-	    int end = 0;
-	    int start = end;
-	    while(start<myTarget.length) {
-		// System.out.write(myTarget[end]);
-		end++;
-		while(partition[end] == false) { 
-		    // System.out.write(myTarget[end]);
-		    end++;
-		}
-		// System.out.print("("+start+","+end+")");
-		myFrequencer.setTarget(subBytes(myTarget, start, end));
-		value1 = value1 + iq(myFrequencer.frequency());
-		start = end;
-	    }
-	    // System.out.println(" "+ value1);
-
-	    // Get the minimal value in "value"
-	    if(value1 < value) value = value1;
+        }
+        var value = cash[myTarget.length-1];
+	if(Double.isInfinite(value) == true){
+	    return Double.MAX_VALUE;
+	}else{
+	    return value;
 	}
-	return value;
     }
 
     public static void main(String[] args) {
